@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fondo_puzzle_game"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".home.HomeFragment">
 
     <Button
-        android:id="@+id/playButton"
+        android:id="@+id/configButton"
         android:layout_width="164dp"
         android:layout_height="61dp"
         android:text="Jugar"
