@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fondo_puzzle_game"
     tools:context=".game.GameFragment">
 
 
@@ -13,14 +14,14 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/puzzleRecycletView"
-            android:layout_width="409dp"
-            android:layout_height="512dp"
+            android:layout_width="414dp"
+            android:layout_height="440dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/puzzleImagen"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.507" />
 
         <ImageView
             android:id="@+id/puzzleImagen"
@@ -32,6 +33,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.026" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Movimientos:"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.045"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/puzzleRecycletView"
+            app:layout_constraintVertical_bias="0.282" />
+
+        <TextView
+            android:id="@+id/movimientosText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.134"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/puzzleRecycletView"
+            app:layout_constraintVertical_bias="0.292" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
