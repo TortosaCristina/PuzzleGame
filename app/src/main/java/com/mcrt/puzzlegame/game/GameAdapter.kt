@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mcrt.puzzlegame.R
 
-class GameAdapter(private val piezas: List<Bitmap>, private val viewModel: GameViewModel) :
+class GameAdapter(private val piezas: List<Bitmap>, private val viewModel: GameViewModel, private val numColumnas: Int) :
     RecyclerView.Adapter<GameAdapter.PiezaViewHolder>(){
     private var selectedPosition: Int? = null
         inner class PiezaViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
@@ -20,7 +20,7 @@ class GameAdapter(private val piezas: List<Bitmap>, private val viewModel: GameV
                     if (selectedPosition == null) {
                         selectedPosition = posicionActual
                     } else {
-                        viewModel.intercambiarPiezas(selectedPosition!!, posicionActual)
+                        viewModel.intercambiarPiezas(selectedPosition!!, posicionActual, numColumnas)
                         notifyItemChanged(selectedPosition!!)
                         notifyItemChanged(posicionActual)
                         selectedPosition = null

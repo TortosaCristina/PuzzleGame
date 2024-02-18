@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ class GameFragment : Fragment() {
     private lateinit var viewModel: GameViewModel
     private lateinit var adapter: GameAdapter
     private lateinit var v: View
+    private lateinit var movimientosTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -32,20 +34,41 @@ class GameFragment : Fragment() {
         v = inflater.inflate(R.layout.fragment_game, container, false)
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
         v.findViewById<ImageView>(R.id.puzzleImagen).setImageResource(R.drawable.imagen_prueba)
-        viewModel.cargarImagen(resources, R.drawable.imagen_prueba)
+
+        val dificultad = arguments?.getString(ARG_DIFICULTAD)
+
+        dificultad?.let {
+            viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
+        }
         val piezas = viewModel.getTablero()
         val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
-        adapter = GameAdapter(piezas, viewModel)
+        val numColumnas = when (dificultad) {
+            "Fácil" -> 3
+            "Intermedio" -> 4
+            "Difícil" -> 5
+            else -> 3
+        }
+        recyclerView.layoutManager = GridLayoutManager(context, numColumnas)
+        adapter = GameAdapter(piezas, viewModel, numColumnas)
         recyclerView.adapter = adapter
+        movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)
         return v
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getMovimientos().observe(viewLifecycleOwner) { movimientos ->
+            movimientosTextView.text = movimientos.toString()
+        }
+    }
     companion object {
+        private const val ARG_DIFICULTAD = "dificultad"
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(dificultad: String) =
             GameFragment().apply {
-
+                arguments = Bundle().apply {
+                    putString(ARG_DIFICULTAD, dificultad)
+                }
             }
     }
 }
