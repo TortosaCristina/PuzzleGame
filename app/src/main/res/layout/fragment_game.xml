@@ -64,6 +64,21 @@
             app:layout_constraintTop_toBottomOf="@+id/puzzleRecycletView"
             app:layout_constraintVertical_bias="0.292" />
 
+        <TextView
+            android:id="@+id/cronometro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00:00"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/puzzleRecycletView"
+            app:layout_constraintEnd_toStartOf="@+id/puzzleImagen"
+            app:layout_constraintHorizontal_bias="0.081"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.557" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

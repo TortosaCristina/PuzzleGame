@@ -1,27 +1,37 @@
 package com.mcrt.puzzlegame.game
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mcrt.puzzlegame.R
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class GameFragment : Fragment() {
     private lateinit var viewModel: GameViewModel
     private lateinit var adapter: GameAdapter
     private lateinit var v: View
     private lateinit var movimientosTextView: TextView
+    private var numColumnas = 0
+
+    private var tiempoInicio: Long = 0
+    private var tiempoTranscurrido: Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -33,7 +43,23 @@ class GameFragment : Fragment() {
     ): View? {
         v = inflater.inflate(R.layout.fragment_game, container, false)
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
-        v.findViewById<ImageView>(R.id.puzzleImagen).setImageResource(R.drawable.imagen_prueba)
+
+        //v.findViewById<ImageView>(R.id.puzzleImagen).setImageResource(R.drawable.imagen_prueba)
+        var imageUrl = "https://cataas.com/cat?type=square"
+        var imageView = v.findViewById<ImageView>(R.id.puzzleImagen)
+        Picasso.get()
+            .load(imageUrl)
+            .error(R.drawable.imagen_prueba) // Imagen de error para mostrar en caso de fallo
+            .into(imageView, object : Callback {
+                override fun onSuccess() {
+                    // La imagen se cargó con éxito
+                }
+
+                override fun onError(e: Exception?) {
+                    // Ocurrió un error al cargar la imagen
+                    Log.e("Picasso", "Error loading image", e)
+                }
+            })
 
         val dificultad = arguments?.getString(ARG_DIFICULTAD)
 
@@ -42,7 +68,7 @@ class GameFragment : Fragment() {
         }
         val piezas = viewModel.getTablero()
         val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
-        val numColumnas = when (dificultad) {
+        /*val*/ numColumnas = when (dificultad) {
             "Fácil" -> 3
             "Intermedio" -> 4
             "Difícil" -> 5
@@ -54,12 +80,66 @@ class GameFragment : Fragment() {
         movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)
         return v
     }
+    private fun iniciarCronometro() {
+        tiempoInicio = System.currentTimeMillis()
+        tiempoTranscurrido = viewLifecycleOwner.lifecycleScope.launch {
+            while (true) {
+                delay(1000)
+                val tiempoTranscurrido = System.currentTimeMillis() - tiempoInicio
+                actualizarCronometro(tiempoTranscurrido)
+            }
+        }
+    }
+    private fun actualizarCronometro(tiempoTranscurrido: Long) {
+        //Convertir el tiempo en horas, minutos y segundos
+        val segundos = (tiempoTranscurrido / 1000).toInt()
+        val horas = segundos / 3600
+        val minutos = (segundos % 3600) / 60
+        val segundosRestantes = segundos % 60
+        //Formatear el tiempo en formato HH:MM:SS
+        val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundosRestantes)
+        v.findViewById<TextView>(R.id.cronometro).text = tiempoFormateado
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        tiempoTranscurrido?.cancel() // Detener el cronómetro cuando el Fragmento se destruye
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        iniciarCronometro()
         viewModel.getMovimientos().observe(viewLifecycleOwner) { movimientos ->
             movimientosTextView.text = movimientos.toString()
+            if (viewModel.isResuelto(numColumnas)) {
+                tiempoTranscurrido?.cancel() // Detener el cronómetro
+                // Aquí puedes mostrar un mensaje de felicitaciones, etc.
+                val tiempoTranscurrido = System.currentTimeMillis() - tiempoInicio
+                mostrarAlertaPuzzleResuelto(tiempoTranscurrido, movimientos)
+            }
         }
+    }
+    private fun mostrarAlertaPuzzleResuelto(tiempoTranscurrido: Long, numMovimientos: Int) {
+        val horas = tiempoTranscurrido / 3600000
+        val minutos = (tiempoTranscurrido % 3600000) / 60000
+        val segundos = (tiempoTranscurrido % 60000) / 1000
+
+        val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundos)
+
+        val mensaje = "¡Puzzle resuelto!\n\nTiempo: $tiempoFormateado\nMovimientos: $numMovimientos"
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("¡Felicidades!")
+            .setMessage(mensaje)
+            .setPositiveButton("Aceptar") { dialog, _ ->
+                val fm: FragmentManager = parentFragmentManager
+                fm.popBackStack()
+                fm.popBackStack()
+                dialog.dismiss()
+            }
+            .setCancelable(false) // Evita que el usuario pueda cerrar la alerta al hacer clic fuera de ella
+
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
     companion object {
         private const val ARG_DIFICULTAD = "dificultad"
