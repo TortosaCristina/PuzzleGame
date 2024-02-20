@@ -3,9 +3,14 @@ package com.mcrt.puzzlegame.game
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.mcrt.puzzlegame.R
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 
 class GameViewModel : ViewModel() {
     private lateinit var imagen: Bitmap
@@ -15,6 +20,22 @@ class GameViewModel : ViewModel() {
     private lateinit var imagenOriginal: MutableList<Bitmap>
     fun cargarImagen(resources: Resources, resId: Int, dificultad: String) {
         imagen = BitmapFactory.decodeResource(resources, resId)
+
+
+        val filasColumnas = when (dificultad) {
+            "Fácil" -> 3
+            "Intermedio" -> 4
+            "Difícil" -> 5
+            else -> throw IllegalArgumentException("Dificultad no válida")
+        }
+        val piezasDesordenadas = dividirImagen(imagen, filasColumnas, filasColumnas)
+        imagenOriginal = piezasDesordenadas.toMutableList()
+        piezas = piezasDesordenadas.shuffled().toMutableList()
+    }
+    fun cargarImagen2(resources: Resources,  bm:Bitmap, dificultad: String) {
+        imagen =bm
+
+
         val filasColumnas = when (dificultad) {
             "Fácil" -> 3
             "Intermedio" -> 4

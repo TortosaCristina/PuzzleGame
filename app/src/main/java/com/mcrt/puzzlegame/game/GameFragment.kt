@@ -1,7 +1,6 @@
 package com.mcrt.puzzlegame.game
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mcrt.puzzlegame.R
 import com.squareup.picasso.Callback
+import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -47,12 +48,30 @@ class GameFragment : Fragment() {
         //v.findViewById<ImageView>(R.id.puzzleImagen).setImageResource(R.drawable.imagen_prueba)
         var imageUrl = "https://cataas.com/cat?type=square"
         var imageView = v.findViewById<ImageView>(R.id.puzzleImagen)
+        val dificultad = arguments?.getString(ARG_DIFICULTAD)
         Picasso.get()
             .load(imageUrl)
+            .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
             .error(R.drawable.imagen_prueba) // Imagen de error para mostrar en caso de fallo
             .into(imageView, object : Callback {
                 override fun onSuccess() {
-                    // La imagen se cargó con éxito
+                    dificultad?.let {
+                        //viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
+                        viewModel.cargarImagen2(resources,  imageView.drawable.toBitmap(), it)
+                    }
+                    val piezas = viewModel.getTablero()
+                    val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
+                    /*val*/ numColumnas = when (dificultad) {
+                        "Fácil" -> 3
+                        "Intermedio" -> 4
+                        "Difícil" -> 5
+                        else -> 3 }
+                    recyclerView.layoutManager = GridLayoutManager(context, numColumnas)
+                    adapter = GameAdapter(piezas, viewModel, numColumnas)
+                    recyclerView.adapter = adapter
+                    movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)
+                    println("-----------------------")
+                    iniciarCronometro()
                 }
 
                 override fun onError(e: Exception?) {
@@ -60,13 +79,10 @@ class GameFragment : Fragment() {
                     Log.e("Picasso", "Error loading image", e)
                 }
             })
-
-        val dificultad = arguments?.getString(ARG_DIFICULTAD)
-
-        dificultad?.let {
+        /*dificultad?.let {
             viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
-        }
-        val piezas = viewModel.getTablero()
+        }*/
+      /*  val piezas = viewModel.getTablero()
         val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
         /*val*/ numColumnas = when (dificultad) {
             "Fácil" -> 3
@@ -77,7 +93,7 @@ class GameFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(context, numColumnas)
         adapter = GameAdapter(piezas, viewModel, numColumnas)
         recyclerView.adapter = adapter
-        movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)
+        movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)*/
         return v
     }
     private fun iniciarCronometro() {
@@ -107,7 +123,6 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        iniciarCronometro()
         viewModel.getMovimientos().observe(viewLifecycleOwner) { movimientos ->
             movimientosTextView.text = movimientos.toString()
             if (viewModel.isResuelto(numColumnas)) {
