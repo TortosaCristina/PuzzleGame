@@ -25,12 +25,14 @@ class ScoreRecyclerViewAdapter (
         holder.movimientos.text = item.movimientos.toString()
         holder.tiempo.text = item.tiempo
         holder.imagenPuzzle.setImageBitmap(item.imagen)
+        holder.dificultad.text = item.dificultad
     }
     inner class ViewHolder(binding: FragmentScoreItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val idScore: TextView = binding.idPartida
         val movimientos: TextView = binding.numMovimientos
         val tiempo: TextView = binding.cantTiempo
         val imagenPuzzle: ImageView = binding.puzzleImageView
+        val dificultad: TextView = binding.dificultad
     }
     public fun setValues(v: MutableList<Score>) {
         this.values = v

@@ -33,6 +33,7 @@ data class Score(
     var imagen: Bitmap ?= null,
     var movimientos: Int ?= -1,
     var tiempo: String = "",
+    var dificultad: String = "",
     @PrimaryKey(autoGenerate = true)
     var id: Long ?= null,
 )

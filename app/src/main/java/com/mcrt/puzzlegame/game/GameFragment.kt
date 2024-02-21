@@ -130,7 +130,7 @@ class GameFragment : Fragment() {
                 val dificultad = arguments?.getString(ARG_DIFICULTAD)
                 val database = context?.let { AppDatabase.getInstance(it) }
                 //var scoreDao: ScoreDao
-                var score = Score(imageView.drawable.toBitmap(), movimientos, tiempoFormateado)
+                var score = Score(imageView.drawable.toBitmap(), movimientos, tiempoFormateado, dificultad!!)
                 score.id = database?.scoreDao()?.insert(score)
                 this.scoresViewModel.save(score)
                 mostrarAlertaPuzzleResuelto(tiempoTranscurrido, movimientos)

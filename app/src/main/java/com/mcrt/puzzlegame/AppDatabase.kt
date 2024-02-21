@@ -8,7 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.mcrt.puzzlegame.score.Score
 import com.mcrt.puzzlegame.score.ScoreDao
 
-@Database(entities = [Score::class], version = 1, exportSchema = true)
+@Database(entities = [Score::class], version = 2, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun scoreDao(): ScoreDao
     companion object {
