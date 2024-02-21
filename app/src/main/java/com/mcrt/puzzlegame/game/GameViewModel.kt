@@ -5,10 +5,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.ImageView
+import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mcrt.puzzlegame.R
+import com.mcrt.puzzlegame.score.ScoreViewModel
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 

@@ -18,13 +18,18 @@ class ScoreViewModel : ViewModel() {
         this.itemsRepository = ScoreRepository(c)
         this._items.value = this.itemsRepository.getAll()
     }
-    fun save() {
+    /*fun save() {
         if (this.selectedScore.id == null) {
             this._items.value?.add(this.selectedScore)
             this.itemsRepository.save(this.selectedScore)
             this.update()
         }
         this.itemsRepository.save(this.selectedScore)
+    }*/
+    fun save(score: Score) {
+        this._items.value?.add(score)
+        this.itemsRepository.save(score)
+        this.update()
     }
     private fun update() {
         var values = this._items.value

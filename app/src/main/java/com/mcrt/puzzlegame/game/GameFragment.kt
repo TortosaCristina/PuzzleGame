@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +21,7 @@ import com.mcrt.puzzlegame.AppDatabase
 import com.mcrt.puzzlegame.R
 import com.mcrt.puzzlegame.score.Score
 import com.mcrt.puzzlegame.score.ScoreDao
+import com.mcrt.puzzlegame.score.ScoreViewModel
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
@@ -34,6 +36,8 @@ class GameFragment : Fragment() {
     private lateinit var movimientosTextView: TextView
     private var numColumnas = 0
     private lateinit var imageView: ImageView
+    private val scoresViewModel: ScoreViewModel by activityViewModels<ScoreViewModel>()
+
 
     private var tiempoInicio: Long = 0
     private var tiempoTranscurrido: Job? = null
@@ -48,8 +52,6 @@ class GameFragment : Fragment() {
     ): View? {
         v = inflater.inflate(R.layout.fragment_game, container, false)
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
-
-
 
         //v.findViewById<ImageView>(R.id.puzzleImagen).setImageResource(R.drawable.imagen_prueba)
         var imageUrl = "https://cataas.com/cat?type=square"
@@ -119,20 +121,29 @@ class GameFragment : Fragment() {
                 tiempoTranscurrido?.cancel() // Detener el cronómetro
                 // Aquí puedes mostrar un mensaje de felicitaciones, etc.
                 val tiempoTranscurrido = System.currentTimeMillis() - tiempoInicio
+                val segundos = (tiempoTranscurrido / 1000).toInt()
+                val horas = segundos / 3600
+                val minutos = (segundos % 3600) / 60
+                val segundosRestantes = segundos % 60
+                //Formatear el tiempo en formato HH:MM:SS
+                val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundosRestantes)
+                val dificultad = arguments?.getString(ARG_DIFICULTAD)
                 val database = context?.let { AppDatabase.getInstance(it) }
-                var scoreDao: ScoreDao
-                var score = Score(imageView.drawable.toBitmap(), movimientos, tiempoTranscurrido.toString())
+                //var scoreDao: ScoreDao
+                var score = Score(imageView.drawable.toBitmap(), movimientos, tiempoFormateado)
                 score.id = database?.scoreDao()?.insert(score)
+                this.scoresViewModel.save(score)
                 mostrarAlertaPuzzleResuelto(tiempoTranscurrido, movimientos)
             }
         }
     }
     private fun mostrarAlertaPuzzleResuelto(tiempoTranscurrido: Long, numMovimientos: Int) {
-        val horas = tiempoTranscurrido / 3600000
-        val minutos = (tiempoTranscurrido % 3600000) / 60000
-        val segundos = (tiempoTranscurrido % 60000) / 1000
-
-        val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundos)
+        val segundos = (tiempoTranscurrido / 1000).toInt()
+        val horas = segundos / 3600
+        val minutos = (segundos % 3600) / 60
+        val segundosRestantes = segundos % 60
+        //Formatear el tiempo en formato HH:MM:SS
+        val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundosRestantes)
 
         val mensaje = "¡Puzzle resuelto!\n\nTiempo: $tiempoFormateado\nMovimientos: $numMovimientos"
 

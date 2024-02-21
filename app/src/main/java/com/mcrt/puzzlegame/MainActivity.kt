@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -20,9 +21,12 @@ import androidx.fragment.app.commit
 import com.mcrt.puzzlegame.config.ConfigFragment
 import com.mcrt.puzzlegame.databinding.ActivityMainBinding
 import com.mcrt.puzzlegame.score.ScoreFragment
+import com.mcrt.puzzlegame.score.ScoreViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val scoresViewModel: ScoreViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)//Icono izquierda
         var drawable = ContextCompat.getDrawable(this, R.drawable.baseline_menu_24)
         supportActionBar?.setHomeAsUpIndicator(drawable)
+
+        this.scoresViewModel.init(this)
 
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -49,17 +55,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 binding.drawerLayout.openDrawer(GravityCompat.START)
-                true
-            }
-            R.id.nav_scores -> {
-                val fm = supportFragmentManager // Obtén el FragmentManager correctamente
-                fm.beginTransaction().apply { // Comienza la transacción del fragmento
-                    replace(R.id.fragmentContainerView, ScoreFragment.newInstance())
-                    addToBackStack("replacement")
-                }.commit() // Realiza la transacción
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -22,7 +22,7 @@ class ScoreRecyclerViewAdapter (
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
         holder.idScore.text = item.id.toString()
-        holder.movimientos.text = item.tiempo
+        holder.movimientos.text = item.movimientos.toString()
         holder.tiempo.text = item.tiempo
         holder.imagenPuzzle.setImageBitmap(item.imagen)
     }
