@@ -24,16 +24,20 @@
                 android:id="@+id/textView"
                 android:layout_width="55dp"
                 android:layout_height="wrap_content"
+                android:background="#A90236BA"
                 android:text="Nº"
                 android:textAlignment="viewStart"
+                android:textColor="#FFFFFF"
                 android:textSize="34sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/idPartida"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#A90236BA"
                 android:textAlignment="viewStart"
+                android:textColor="#FFFFFF"
                 android:textSize="34sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -48,17 +52,23 @@
                 android:layout_width="102dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="#700236BA"
                 android:text="Dificultad:"
                 android:textAlignment="viewStart"
-                android:textSize="20sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/dificultad"
                 android:layout_width="102dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="#700236BA"
                 android:textAlignment="viewStart"
-                android:textSize="20sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -70,16 +80,22 @@
                 android:id="@+id/textView4"
                 android:layout_width="135dp"
                 android:layout_height="match_parent"
+                android:background="#700236BA"
                 android:text="Movimientos:"
                 android:textAlignment="viewStart"
-                android:textSize="20sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/numMovimientos"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#700236BA"
                 android:textAlignment="viewStart"
-                android:textSize="20sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -91,16 +107,22 @@
                 android:id="@+id/textView6"
                 android:layout_width="85dp"
                 android:layout_height="wrap_content"
+                android:background="#700236BA"
                 android:text="Tiempo:"
                 android:textAlignment="viewStart"
-                android:textSize="20sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/cantTiempo"
-                android:layout_width="102dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#700236BA"
                 android:textAlignment="viewStart"
-                android:textSize="20sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

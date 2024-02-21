@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.mcrt.puzzlegame.config.ConfigFragment
 import com.mcrt.puzzlegame.databinding.ActivityMainBinding
+import com.mcrt.puzzlegame.home.HomeFragment
 import com.mcrt.puzzlegame.score.ScoreFragment
 import com.mcrt.puzzlegame.score.ScoreViewModel
 
@@ -58,6 +59,19 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             android.R.id.home -> {
                 binding.drawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            R.id.action_home -> {
+                val fragment = HomeFragment.newInstance()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainerView, fragment)
+                    .addToBackStack("replacement")
+                    .commit()
+                binding.drawerLayout.closeDrawers() // Cerrar el Drawer después de hacer clic
+                true
+            }
+            R.id.action_exit -> {
+                System.exit(0)
                 true
             }
             else -> super.onOptionsItemSelected(item)
