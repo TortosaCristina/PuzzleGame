@@ -16,7 +16,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mcrt.puzzlegame.AppDatabase
 import com.mcrt.puzzlegame.R
+import com.mcrt.puzzlegame.score.Score
+import com.mcrt.puzzlegame.score.ScoreDao
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
@@ -30,6 +33,7 @@ class GameFragment : Fragment() {
     private lateinit var v: View
     private lateinit var movimientosTextView: TextView
     private var numColumnas = 0
+    private lateinit var imageView: ImageView
 
     private var tiempoInicio: Long = 0
     private var tiempoTranscurrido: Job? = null
@@ -45,10 +49,13 @@ class GameFragment : Fragment() {
         v = inflater.inflate(R.layout.fragment_game, container, false)
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
+
+
         //v.findViewById<ImageView>(R.id.puzzleImagen).setImageResource(R.drawable.imagen_prueba)
         var imageUrl = "https://cataas.com/cat?type=square"
-        var imageView = v.findViewById<ImageView>(R.id.puzzleImagen)
+
         val dificultad = arguments?.getString(ARG_DIFICULTAD)
+        imageView = v.findViewById<ImageView>(R.id.puzzleImagen)
         Picasso.get()
             .load(imageUrl)
             .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
@@ -61,7 +68,7 @@ class GameFragment : Fragment() {
                     }
                     val piezas = viewModel.getTablero()
                     val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
-                    /*val*/ numColumnas = when (dificultad) {
+                    numColumnas = when (dificultad) {
                         "Fácil" -> 3
                         "Intermedio" -> 4
                         "Difícil" -> 5
@@ -70,30 +77,13 @@ class GameFragment : Fragment() {
                     adapter = GameAdapter(piezas, viewModel, numColumnas)
                     recyclerView.adapter = adapter
                     movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)
-                    println("-----------------------")
                     iniciarCronometro()
                 }
-
                 override fun onError(e: Exception?) {
                     // Ocurrió un error al cargar la imagen
                     Log.e("Picasso", "Error loading image", e)
                 }
             })
-        /*dificultad?.let {
-            viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
-        }*/
-      /*  val piezas = viewModel.getTablero()
-        val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
-        /*val*/ numColumnas = when (dificultad) {
-            "Fácil" -> 3
-            "Intermedio" -> 4
-            "Difícil" -> 5
-            else -> 3
-        }
-        recyclerView.layoutManager = GridLayoutManager(context, numColumnas)
-        adapter = GameAdapter(piezas, viewModel, numColumnas)
-        recyclerView.adapter = adapter
-        movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)*/
         return v
     }
     private fun iniciarCronometro() {
@@ -129,6 +119,10 @@ class GameFragment : Fragment() {
                 tiempoTranscurrido?.cancel() // Detener el cronómetro
                 // Aquí puedes mostrar un mensaje de felicitaciones, etc.
                 val tiempoTranscurrido = System.currentTimeMillis() - tiempoInicio
+                val database = context?.let { AppDatabase.getInstance(it) }
+                var scoreDao: ScoreDao
+                var score = Score(imageView.drawable.toBitmap(), movimientos, tiempoTranscurrido.toString())
+                score.id = database?.scoreDao()?.insert(score)
                 mostrarAlertaPuzzleResuelto(tiempoTranscurrido, movimientos)
             }
         }
