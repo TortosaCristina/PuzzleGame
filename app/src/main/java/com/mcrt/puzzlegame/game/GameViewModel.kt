@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso
 class GameViewModel : ViewModel() {
     private lateinit var imagen: Bitmap
     private lateinit var piezas: MutableList<Bitmap>
-    private var movimientos = MutableLiveData<Int>()
+    var movimientos = MutableLiveData<Int>()
 
     private lateinit var imagenOriginal: MutableList<Bitmap>
     fun cargarImagen(resources: Resources, resId: Int, dificultad: String) {

@@ -8,5 +8,11 @@
             android:id="@+id/nav_scores"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Lista de partidas" />
+        <item
+            android:id="@+id/nav_restart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/restart"
+            android:title="Reiniciar" />
     </group>
 </menu>

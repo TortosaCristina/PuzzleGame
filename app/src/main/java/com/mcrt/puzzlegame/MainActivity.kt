@@ -20,12 +20,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.mcrt.puzzlegame.config.ConfigFragment
 import com.mcrt.puzzlegame.databinding.ActivityMainBinding
+import com.mcrt.puzzlegame.game.GameViewModel
 import com.mcrt.puzzlegame.home.HomeFragment
 import com.mcrt.puzzlegame.score.ScoreFragment
 import com.mcrt.puzzlegame.score.ScoreViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val gameViewModel: GameViewModel by viewModels()
     private val scoresViewModel: ScoreViewModel by viewModels()
 
 
@@ -62,12 +64,15 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_home -> {
-                val fragment = HomeFragment.newInstance()
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView, fragment)
-                    .addToBackStack("replacement")
-                    .commit()
-                binding.drawerLayout.closeDrawers() // Cerrar el Drawer después de hacer clic
+                var fm: FragmentManager = supportFragmentManager
+                fm.commit {
+                    replace(R.id.fragmentContainerView, HomeFragment.newInstance())
+                    fm.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
+                true
+            }
+            R.id.nav_restart -> {
+
                 true
             }
             R.id.action_exit -> {
