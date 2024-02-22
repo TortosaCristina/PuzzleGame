@@ -1,18 +1,9 @@
 package com.mcrt.puzzlegame
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -20,14 +11,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.mcrt.puzzlegame.config.ConfigFragment
 import com.mcrt.puzzlegame.databinding.ActivityMainBinding
-import com.mcrt.puzzlegame.game.GameViewModel
 import com.mcrt.puzzlegame.home.HomeFragment
 import com.mcrt.puzzlegame.score.ScoreFragment
 import com.mcrt.puzzlegame.score.ScoreViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val gameViewModel: GameViewModel by viewModels()
     private val scoresViewModel: ScoreViewModel by viewModels()
 
 
@@ -69,10 +58,6 @@ class MainActivity : AppCompatActivity() {
                     replace(R.id.fragmentContainerView, HomeFragment.newInstance())
                     fm.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 }
-                true
-            }
-            R.id.nav_restart -> {
-
                 true
             }
             R.id.action_exit -> {

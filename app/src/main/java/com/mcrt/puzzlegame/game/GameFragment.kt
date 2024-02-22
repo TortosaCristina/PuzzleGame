@@ -1,7 +1,6 @@
 package com.mcrt.puzzlegame.game
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -19,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mcrt.puzzlegame.AppDatabase
+import com.mcrt.puzzlegame.MainActivity
 import com.mcrt.puzzlegame.R
 import com.mcrt.puzzlegame.score.Score
 import com.mcrt.puzzlegame.score.ScoreDao
@@ -31,13 +31,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class GameFragment : Fragment() {
-    private val viewModel: GameViewModel by activityViewModels()
+    private lateinit var viewModel: GameViewModel
     private lateinit var adapter: GameAdapter
     private lateinit var v: View
     private lateinit var movimientosTextView: TextView
     private var numColumnas = 0
     private lateinit var imageView: ImageView
-    private val scoresViewModel: ScoreViewModel by activityViewModels()
+    private val scoresViewModel: ScoreViewModel by activityViewModels<ScoreViewModel>()
 
 
     private var tiempoInicio: Long = 0
@@ -52,7 +52,7 @@ class GameFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         v = inflater.inflate(R.layout.fragment_game, container, false)
-        //viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
         //v.findViewById<ImageView>(R.id.puzzleImagen).setImageResource(R.drawable.imagen_prueba)
         var imageUrl = "https://cataas.com/cat?type=square"
@@ -87,6 +87,7 @@ class GameFragment : Fragment() {
                     Log.e("Picasso", "Error loading image", e)
                 }
             })
+
         return v
     }
     private fun iniciarCronometro() {
