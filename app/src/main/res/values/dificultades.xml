@@ -4,5 +4,6 @@
         <item>Fácil</item>
         <item>Intermedio</item>
         <item>Difícil</item>
+        <item>Personalizado</item>
     </string-array>
 </resources>

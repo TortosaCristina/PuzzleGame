@@ -1,6 +1,7 @@
 package com.mcrt.puzzlegame.game
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -58,36 +59,59 @@ class GameFragment : Fragment() {
         var imageUrl = "https://cataas.com/cat?type=square"
 
         val dificultad = arguments?.getString(ARG_DIFICULTAD)
-        imageView = v.findViewById<ImageView>(R.id.puzzleImagen)
-        Picasso.get()
-            .load(imageUrl)
-            .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-            .error(R.drawable.imagen_prueba) // Imagen de error para mostrar en caso de fallo
-            .into(imageView, object : Callback {
-                override fun onSuccess() {
-                    dificultad?.let {
-                        //viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
-                        viewModel.cargarImagen2(resources,  imageView.drawable.toBitmap(), it)
+        val imagenPersonalizada: Bitmap? = arguments?.getParcelable(ARG_IMAGEN)
+        val numFilas = arguments?.getInt(ARG_FILAS_CUSTOM)
+        if (dificultad == "Personalizado") {
+            imageView = v.findViewById<ImageView>(R.id.puzzleImagen)
+            imageView.setImageBitmap(imagenPersonalizada!!)
+            dificultad?.let {
+                //viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
+                numColumnas = when (dificultad) {
+                    "Fácil" -> 3
+                    "Intermedio" -> 4
+                    "Difícil" -> 5
+                    "Personalizado" -> numFilas!!
+                    else -> 3 }
+                viewModel.cargarImagen(resources, imagenPersonalizada!! , numColumnas)
+            }
+            val piezas = viewModel.getTablero()
+            val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
+            recyclerView.layoutManager = GridLayoutManager(context, numColumnas!!)
+            adapter = GameAdapter(piezas, viewModel, numColumnas!!)
+            recyclerView.adapter = adapter
+            movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)
+            iniciarCronometro()
+        } else {
+            imageView = v.findViewById<ImageView>(R.id.puzzleImagen)
+            Picasso.get()
+                .load(imageUrl)
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .error(R.drawable.imagen_prueba) // Imagen de error para mostrar en caso de fallo
+                .into(imageView, object : Callback {
+                    override fun onSuccess() {
+                        dificultad?.let {
+                            //viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
+                            viewModel.cargarImagen2(resources,  imageView.drawable.toBitmap(), it)
+                        }
+                        val piezas = viewModel.getTablero()
+                        val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
+                        numColumnas = when (dificultad) {
+                            "Fácil" -> 3
+                            "Intermedio" -> 4
+                            "Difícil" -> 5
+                            else -> 3 }
+                        recyclerView.layoutManager = GridLayoutManager(context, numColumnas)
+                        adapter = GameAdapter(piezas, viewModel, numColumnas)
+                        recyclerView.adapter = adapter
+                        movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)
+                        iniciarCronometro()
                     }
-                    val piezas = viewModel.getTablero()
-                    val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
-                    numColumnas = when (dificultad) {
-                        "Fácil" -> 3
-                        "Intermedio" -> 4
-                        "Difícil" -> 5
-                        else -> 3 }
-                    recyclerView.layoutManager = GridLayoutManager(context, numColumnas)
-                    adapter = GameAdapter(piezas, viewModel, numColumnas)
-                    recyclerView.adapter = adapter
-                    movimientosTextView = v.findViewById<TextView>(R.id.movimientosText)
-                    iniciarCronometro()
-                }
-                override fun onError(e: Exception?) {
-                    // Ocurrió un error al cargar la imagen
-                    Log.e("Picasso", "Error loading image", e)
-                }
-            })
-
+                    override fun onError(e: Exception?) {
+                        // Ocurrió un error al cargar la imagen
+                        Log.e("Picasso", "Error loading image", e)
+                    }
+                })
+        }
         return v
     }
     private fun iniciarCronometro() {
@@ -165,11 +189,15 @@ class GameFragment : Fragment() {
     }
     companion object {
         private const val ARG_DIFICULTAD = "dificultad"
+        private const val ARG_FILAS_CUSTOM = "numFilas"
+        private const val ARG_IMAGEN = "imagen"
         @JvmStatic
-        fun newInstance(dificultad: String) =
+        fun newInstance(dificultad: String, imagen: Bitmap, numFilas: Int) =
             GameFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_DIFICULTAD, dificultad)
+                    putParcelable(ARG_IMAGEN, imagen)
+                    putInt(ARG_FILAS_CUSTOM, numFilas)
                 }
             }
     }

@@ -21,17 +21,9 @@ class GameViewModel : ViewModel() {
     var movimientos = MutableLiveData<Int>()
 
     private lateinit var imagenOriginal: MutableList<Bitmap>
-    fun cargarImagen(resources: Resources, resId: Int, dificultad: String) {
-        imagen = BitmapFactory.decodeResource(resources, resId)
-
-
-        val filasColumnas = when (dificultad) {
-            "Fácil" -> 3
-            "Intermedio" -> 4
-            "Difícil" -> 5
-            else -> throw IllegalArgumentException("Dificultad no válida")
-        }
-        val piezasDesordenadas = dividirImagen(imagen, filasColumnas, filasColumnas)
+    fun cargarImagen(resources: Resources, bm:Bitmap, numFilas: Int) {
+        imagen = bm
+        val piezasDesordenadas = dividirImagen(imagen, numFilas,  numFilas)
         imagenOriginal = piezasDesordenadas.toMutableList()
         piezas = piezasDesordenadas.shuffled().toMutableList()
     }
