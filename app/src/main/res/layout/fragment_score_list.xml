@@ -7,9 +7,7 @@
     android:background="@drawable/fondo_puzzle_game"
     tools:context=".MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:name="com.mcrt.puzzlegame.score.ScoreFragment"
         android:layout_width="match_parent"
@@ -19,4 +17,5 @@
         app:layoutManager="LinearLayoutManager"
         tools:context=".score.ScoreFragment"
         tools:listitem="@layout/fragment_score_item" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

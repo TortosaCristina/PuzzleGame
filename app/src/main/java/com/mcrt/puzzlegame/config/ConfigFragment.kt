@@ -26,6 +26,7 @@ import com.mcrt.puzzlegame.R
 import com.mcrt.puzzlegame.game.GameFragment
 import java.io.IOException
 import android.Manifest
+import android.graphics.BitmapFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
@@ -57,6 +58,7 @@ class ConfigFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         dificultadSpinner.adapter = adapter
 
+        selectedBitmap = BitmapFactory.decodeResource(resources, R.drawable.error)
         dificultadSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (dificultades[position] == "Personalizado") {

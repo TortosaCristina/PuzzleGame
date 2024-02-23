@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.toBitmap
@@ -52,9 +53,11 @@ class GameFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         v = inflater.inflate(R.layout.fragment_game, container, false)
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
-
+        v.findViewById<ProgressBar>(R.id.imageProgress).visibility = View.VISIBLE
+        v.findViewById<ProgressBar>(R.id.puzzleProgress).visibility = View.VISIBLE
         //v.findViewById<ImageView>(R.id.puzzleImagen).setImageResource(R.drawable.imagen_prueba)
         var imageUrl = "https://cataas.com/cat?type=square"
 
@@ -73,6 +76,8 @@ class GameFragment : Fragment() {
                     "Personalizado" -> numFilas!!
                     else -> 3 }
                 viewModel.cargarImagen(resources, imagenPersonalizada!! , numColumnas)
+                v.findViewById<ProgressBar>(R.id.imageProgress).visibility = View.GONE
+                v.findViewById<ProgressBar>(R.id.puzzleProgress).visibility = View.GONE
             }
             val piezas = viewModel.getTablero()
             val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
@@ -89,9 +94,12 @@ class GameFragment : Fragment() {
                 .error(R.drawable.imagen_prueba) // Imagen de error para mostrar en caso de fallo
                 .into(imageView, object : Callback {
                     override fun onSuccess() {
+
                         dificultad?.let {
                             //viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
                             viewModel.cargarImagen2(resources,  imageView.drawable.toBitmap(), it)
+                            v.findViewById<ProgressBar>(R.id.imageProgress).visibility = View.GONE
+                            v.findViewById<ProgressBar>(R.id.puzzleProgress).visibility = View.GONE
                         }
                         val piezas = viewModel.getTablero()
                         val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
