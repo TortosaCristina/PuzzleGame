@@ -21,16 +21,16 @@ class GameViewModel : ViewModel() {
     var movimientos = MutableLiveData<Int>()
 
     private lateinit var imagenOriginal: MutableList<Bitmap>
-    fun cargarImagen(resources: Resources, bm:Bitmap, numFilas: Int) {
+    //Carga las imagenes personalizadas
+    fun cargarImagenPersonalizada(resources: Resources, bm:Bitmap, numFilas: Int) {
         imagen = bm
         val piezasDesordenadas = dividirImagen(imagen, numFilas,  numFilas)
         imagenOriginal = piezasDesordenadas.toMutableList()
         piezas = piezasDesordenadas.shuffled().toMutableList()
     }
-    fun cargarImagen2(resources: Resources,  bm:Bitmap, dificultad: String) {
+    //Carga las imagenes de la api
+    fun cargarImagen(resources: Resources,  bm:Bitmap, dificultad: String) {
         imagen =bm
-
-
         val filasColumnas = when (dificultad) {
             "Fácil" -> 3
             "Intermedio" -> 4
@@ -41,6 +41,7 @@ class GameViewModel : ViewModel() {
         imagenOriginal = piezasDesordenadas.toMutableList()
         piezas = piezasDesordenadas.shuffled().toMutableList()
     }
+    //Si esta resuelto no permite mover mas fichas
     fun isResuelto(dimensiones: Int): Boolean {
         for ((index, pieza) in piezas.withIndex()) {
             val posicionCorrecta = index % (dimensiones * dimensiones) // 9 es el tamaño del rompecabezas
@@ -51,9 +52,11 @@ class GameViewModel : ViewModel() {
         }
         return true
     }
+    //Obtenemos el tablero
     fun getTablero() : List<Bitmap> {
         return piezas
     }
+    //Nos permite intercambiar las piezas
     fun intercambiarPiezas(origen: Int, destino: Int, dimensiones: Int) {
         if (!isResuelto(dimensiones)) {
             if (origen != destino) {
@@ -64,10 +67,12 @@ class GameViewModel : ViewModel() {
             }
         }
     }
+    //Incrementa los movimientos cada vez que se cambia una pieza
     fun incrementarMovimientos() {
         val movimientoActual = movimientos.value?: 0
         movimientos.value = movimientoActual + 1
     }
+    //Divide la imagen para generar el tablero
     private fun dividirImagen(imagen: Bitmap, filas: Int, columnas: Int) : List<Bitmap> {
         val anchoPieza = imagen.width / columnas
         val largoPieza = imagen.height / filas
@@ -80,6 +85,7 @@ class GameViewModel : ViewModel() {
         }
         return piezas
     }
+    //Obtenemos los movimientos en un momento dado
     fun getMovimientos() : LiveData<Int> {
         return movimientos
     }

@@ -46,7 +46,7 @@ class GameFragment : Fragment() {
     private val scoresViewModel: ScoreViewModel by activityViewModels<ScoreViewModel>()
 
 
-    private var tiempoInicio: Long = 0
+    private var tiempoInicio: Long = 0 //Tiempo de inicio del cronometro
     private var tiempoTranscurrido: Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,29 +57,30 @@ class GameFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         v = inflater.inflate(R.layout.fragment_game, container, false)
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        //Cargamos los spinners de progreso mientras hacemos la peticion
         v.findViewById<ProgressBar>(R.id.imageProgress).visibility = View.VISIBLE
         v.findViewById<ProgressBar>(R.id.puzzleProgress).visibility = View.VISIBLE
-        //v.findViewById<ImageView>(R.id.puzzleImagen).setImageResource(R.drawable.imagen_prueba)
-        var imageUrl = "https://cataas.com/cat?type=square"
 
+        var imageUrl = "https://cataas.com/cat?type=square"
+        //Cogemos los argumentos que hemos pasado del fragmento Config
         val dificultad = arguments?.getString(ARG_DIFICULTAD)
         val imagenPersonalizada: Bitmap? = arguments?.getParcelable(ARG_IMAGEN)
         val numFilas = arguments?.getInt(ARG_FILAS_CUSTOM)
+        //Si la dificultad es personalizda le pasaremos imagen y columnas personalizadas
+        //Sino, tendran valores por defecto y la imagen sera una aleatoria de la api
         if (dificultad == "Personalizado") {
             imageView = v.findViewById<ImageView>(R.id.puzzleImagen)
             imageView.setImageBitmap(imagenPersonalizada!!)
             dificultad?.let {
-                //viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
                 numColumnas = when (dificultad) {
                     "Fácil" -> 3
                     "Intermedio" -> 4
                     "Difícil" -> 5
                     "Personalizado" -> numFilas!!
                     else -> 3 }
-                viewModel.cargarImagen(resources, imagenPersonalizada!! , numColumnas)
+                viewModel.cargarImagenPersonalizada(resources, imagenPersonalizada!! , numColumnas)
                 v.findViewById<ProgressBar>(R.id.imageProgress).visibility = View.GONE
                 v.findViewById<ProgressBar>(R.id.puzzleProgress).visibility = View.GONE
             }
@@ -94,14 +95,14 @@ class GameFragment : Fragment() {
             imageView = v.findViewById<ImageView>(R.id.puzzleImagen)
             Picasso.get()
                 .load(imageUrl)
-                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE) //No se almacena en la cache para que me saque diferentes imagenes
                 .error(R.drawable.imagen_prueba) // Imagen de error para mostrar en caso de fallo
                 .into(imageView, object : Callback {
                     override fun onSuccess() {
 
                         dificultad?.let {
                             //viewModel.cargarImagen(resources, R.drawable.imagen_prueba, it)
-                            viewModel.cargarImagen2(resources,  imageView.drawable.toBitmap(), it)
+                            viewModel.cargarImagen(resources,  imageView.drawable.toBitmap(), it)
                             v.findViewById<ProgressBar>(R.id.imageProgress).visibility = View.GONE
                             v.findViewById<ProgressBar>(R.id.puzzleProgress).visibility = View.GONE
                         }
@@ -126,6 +127,7 @@ class GameFragment : Fragment() {
         }
         return v
     }
+    //Inicia el cronometro
     private fun iniciarCronometro() {
         tiempoInicio = System.currentTimeMillis()
         tiempoTranscurrido = viewLifecycleOwner.lifecycleScope.launch {
@@ -136,6 +138,7 @@ class GameFragment : Fragment() {
             }
         }
     }
+    //Lo actualiza para que se vea en la pantalla
     private fun actualizarCronometro(tiempoTranscurrido: Long) {
         //Convertir el tiempo en horas, minutos y segundos
         val segundos = (tiempoTranscurrido / 1000).toInt()
@@ -167,7 +170,7 @@ class GameFragment : Fragment() {
                 val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundosRestantes)
                 val dificultad = arguments?.getString(ARG_DIFICULTAD)
                 val database = context?.let { AppDatabase.getInstance(it) }
-                //var scoreDao: ScoreDao
+                //Almacena la partida cuando hemos acabado la partida
                 var score = Score(imageView.drawable.toBitmap(), movimientos, tiempoFormateado, dificultad!!)
                 score.id = database?.scoreDao()?.insert(score)
                 this.scoresViewModel.save(score)
@@ -175,6 +178,7 @@ class GameFragment : Fragment() {
             }
         }
     }
+    //Alerta que saldra cuado terminemos el puzzle, concretamente un segundo despues
     private fun mostrarAlertaPuzzleResuelto(tiempoTranscurrido: Long, numMovimientos: Int) {
         val segundos = (tiempoTranscurrido / 1000).toInt()
         val horas = segundos / 3600

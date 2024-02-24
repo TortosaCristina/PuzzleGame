@@ -29,9 +29,9 @@ class ScoreFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         view = inflater.inflate(R.layout.fragment_score_list, container, false)
-        setupRecyclerView()
+        setupRecyclerView() //Seleccionamos el adaptador
         setupFloatingActionButtons() // Aquí se llama al método para configurar los botones flotantes
-        observeViewModel()
+        observeViewModel() //Observamos los cambios
         return view
     }
 
@@ -46,11 +46,9 @@ class ScoreFragment : Fragment() {
         view?.findViewById<FloatingActionButton>(R.id.orderNumPartida)?.setOnClickListener {
             viewModel.orderByNumeroPartida()
         }
-
         view?.findViewById<FloatingActionButton>(R.id.orderTiempo)?.setOnClickListener {
             viewModel.orderByTiempo()
         }
-
         view?.findViewById<FloatingActionButton>(R.id.orderMovimientos)?.setOnClickListener {
             viewModel.orderByMovimientos()
         }

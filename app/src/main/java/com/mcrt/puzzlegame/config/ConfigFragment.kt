@@ -31,10 +31,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
 class ConfigFragment : Fragment() {
-    private lateinit var v: View
-    private val REQUEST_IMAGE = 1001
-    private var selectedBitmap: Bitmap? = null
-    private lateinit var viewModel: ConfigViewModel
+    private lateinit var v: View //Vista
+    private val REQUEST_IMAGE = 1001 //Respuesta de la peticion a la api
+    private var selectedBitmap: Bitmap? = null //Imagen seleccionada
+    private lateinit var viewModel: ConfigViewModel //Viewmodel del config
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +58,9 @@ class ConfigFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         dificultadSpinner.adapter = adapter
 
+        //Para que en caso de que la dificultad no sea personalizado la imagen que no se va a usar no se pase al otro fragmento en nulo
         selectedBitmap = BitmapFactory.decodeResource(resources, R.drawable.error)
+        //Si la dificultad esta en personalizado o no hara una cosa u otra
         dificultadSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (dificultades[position] == "Personalizado") {
@@ -99,10 +101,12 @@ class ConfigFragment : Fragment() {
                 // Handle default selection
             }
         }
+        //Coge el numero de filas del EditText en personalizado
         viewModel.numFilas.observe(viewLifecycleOwner, Observer { numFilas ->
             numFilasEdit.setText(numFilas.toString()) // Actualizar el EditText con el valor del LiveData
         })
 
+        //Cuando le damos al boton de jugar abre el fragmento Game
         playGameButton.setOnClickListener {
             val dificultadSeleccionada = dificultadSpinner.selectedItem.toString()
             val numFilas = numFilasEdit.text.toString().toIntOrNull() ?: 0
@@ -115,7 +119,7 @@ class ConfigFragment : Fragment() {
                 addToBackStack("replacement")
             }
         }
-
+        //Cuando pulso el boton de seleccionar imagen primero pide el permiso
         selectImagen.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
                     requireContext(),
@@ -133,11 +137,12 @@ class ConfigFragment : Fragment() {
         }
     }
 
+    //Abre la galeria
     private fun abrirGaleriaFotos() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent, REQUEST_IMAGE)
     }
-
+    //Espera a que le devuelva la imagen que hemos selccionado de la galeria
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE && resultCode == Activity.RESULT_OK) {
