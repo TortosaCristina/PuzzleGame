@@ -42,6 +42,7 @@ android {
 
 dependencies {
     implementation("com.squareup.picasso:picasso:2.71828")
+    implementation("com.getbase:floatingactionbutton:1.10.1")
 
     implementation("androidx.room:room-runtime:2.5.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")

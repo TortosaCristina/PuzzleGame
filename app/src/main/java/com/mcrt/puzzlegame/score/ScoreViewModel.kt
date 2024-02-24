@@ -18,14 +18,6 @@ class ScoreViewModel : ViewModel() {
         this.itemsRepository = ScoreRepository(c)
         this._items.value = this.itemsRepository.getAll()
     }
-    /*fun save() {
-        if (this.selectedScore.id == null) {
-            this._items.value?.add(this.selectedScore)
-            this.itemsRepository.save(this.selectedScore)
-            this.update()
-        }
-        this.itemsRepository.save(this.selectedScore)
-    }*/
     fun save(score: Score) {
         this._items.value?.add(score)
         this.itemsRepository.save(score)
@@ -39,5 +31,16 @@ class ScoreViewModel : ViewModel() {
         this._items.value?.remove(this.selectedScore)
         this.itemsRepository.delete(this.selectedScore)
         this.update()
+    }
+    fun orderByNumeroPartida() {
+        _items.value = _items.value?.sortedBy { it.id }?.toMutableList()
+    }
+
+    fun orderByTiempo() {
+        _items.value = _items.value?.sortedBy { it.tiempo }?.toMutableList()
+    }
+
+    fun orderByMovimientos() {
+        _items.value = _items.value?.sortedBy { it.movimientos }?.toMutableList()
     }
 }

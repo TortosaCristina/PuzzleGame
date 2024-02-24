@@ -39,4 +39,18 @@ class ScoreRecyclerViewAdapter (
         this.notifyDataSetChanged()
     }
     override fun getItemCount(): Int = values.size
+    fun sortByNumeroPartida() {
+        values.sortBy { it.id }
+        notifyDataSetChanged()
+    }
+
+    fun sortByTiempo() {
+        values.sortBy { it.tiempo }
+        notifyDataSetChanged()
+    }
+
+    fun sortByMovimientos() {
+        values.sortBy { it.movimientos }
+        notifyDataSetChanged()
+    }
 }
