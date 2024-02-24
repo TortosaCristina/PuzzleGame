@@ -3,6 +3,7 @@ package com.mcrt.puzzlegame.game
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -28,9 +29,12 @@ import com.mcrt.puzzlegame.score.ScoreViewModel
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class GameFragment : Fragment() {
     private lateinit var viewModel: GameViewModel
@@ -176,24 +180,33 @@ class GameFragment : Fragment() {
         val horas = segundos / 3600
         val minutos = (segundos % 3600) / 60
         val segundosRestantes = segundos % 60
-        //Formatear el tiempo en formato HH:MM:SS
+        // Formatear el tiempo en formato HH:MM:SS
         val tiempoFormateado = String.format("%02d:%02d:%02d", horas, minutos, segundosRestantes)
 
         val mensaje = "¡Puzzle resuelto!\n\nTiempo: $tiempoFormateado\nMovimientos: $numMovimientos"
 
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("¡Felicidades!")
-            .setMessage(mensaje)
-            .setPositiveButton("Aceptar") { dialog, _ ->
-                val fm: FragmentManager = parentFragmentManager
-                fm.popBackStack()
-                fm.popBackStack()
-                dialog.dismiss()
-            }
-            .setCancelable(false) // Evita que el usuario pueda cerrar la alerta al hacer clic fuera de ella
+        // Se lanza una corrutina en un alcance global
+        GlobalScope.launch {
+            // Se suspende la corrutina durante un segundo
+            delay(1000)
 
-        val alertDialog = builder.create()
-        alertDialog.show()
+            // Se utiliza el contexto del hilo principal para mostrar la alerta
+            withContext(Dispatchers.Main) {
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("¡Felicidades!")
+                    .setMessage(mensaje)
+                    .setPositiveButton("Aceptar") { dialog, _ ->
+                        val fm: FragmentManager = parentFragmentManager
+                        fm.popBackStack()
+                        fm.popBackStack()
+                        dialog.dismiss()
+                    }
+                    .setCancelable(false) // Evita que el usuario pueda cerrar la alerta al hacer clic fuera de ella
+
+                val alertDialog = builder.create()
+                alertDialog.show()
+            }
+        }
     }
     companion object {
         private const val ARG_DIFICULTAD = "dificultad"
