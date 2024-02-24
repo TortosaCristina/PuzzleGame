@@ -33,14 +33,14 @@ class ScoreViewModel : ViewModel() {
         this.update()
     }
     fun orderByNumeroPartida() {
-        _items.value = _items.value?.sortedBy { it.id }?.toMutableList()
+        _items.value = this.itemsRepository.getAllNumPartida()
     }
 
     fun orderByTiempo() {
-        _items.value = _items.value?.sortedBy { it.tiempo }?.toMutableList()
+        _items.value = this.itemsRepository.getAllTiempo()
     }
 
     fun orderByMovimientos() {
-        _items.value = _items.value?.sortedBy { it.movimientos }?.toMutableList()
+        _items.value = this.itemsRepository.getAllMov()
     }
 }

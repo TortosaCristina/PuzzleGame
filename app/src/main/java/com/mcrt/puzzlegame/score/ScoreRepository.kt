@@ -18,6 +18,15 @@ class ScoreRepository(var context: Context) {
     fun getAll(): MutableList<Score> {
         return _scoreDao.getAll().toMutableList()
     }
+    fun getAllMov(): MutableList<Score> {
+        return _scoreDao.getAllMov().toMutableList()
+    }
+    fun getAllNumPartida(): MutableList<Score> {
+        return _scoreDao.getAllNumPartida().toMutableList()
+    }
+    fun getAllTiempo(): MutableList<Score> {
+        return _scoreDao.getAllTiempo().toMutableList()
+    }
     fun update(item: Score) {
         this._scoreDao.update(item)
     }

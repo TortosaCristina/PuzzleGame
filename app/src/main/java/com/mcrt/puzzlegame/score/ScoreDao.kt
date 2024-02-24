@@ -16,4 +16,10 @@ interface ScoreDao {
     fun update(item: Score)
     @Query("SELECT * FROM score")
     fun getAll(): List<Score>
+    @Query("SELECT * FROM score ORDER BY movimientos ASC")
+    fun getAllMov(): List<Score>
+    @Query("SELECT * FROM score ORDER BY id ASC")
+    fun getAllNumPartida(): List<Score>
+    @Query("SELECT * FROM score ORDER BY tiempo ASC")
+    fun getAllTiempo(): List<Score>
 }
