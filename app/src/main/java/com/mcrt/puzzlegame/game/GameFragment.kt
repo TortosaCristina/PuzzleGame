@@ -110,7 +110,7 @@ class GameFragment : Fragment() {
                         val recyclerView = v.findViewById<RecyclerView>(R.id.puzzleRecycletView)
                         numColumnas = when (dificultad) {
                             "Fácil" -> 3
-                            "Intermedio" -> 4
+                            "Medio" -> 4
                             "Difícil" -> 5
                             else -> 3 }
                         recyclerView.layoutManager = GridLayoutManager(context, numColumnas)
@@ -189,11 +189,10 @@ class GameFragment : Fragment() {
 
         val mensaje = "¡Puzzle resuelto!\n\nTiempo: $tiempoFormateado\nMovimientos: $numMovimientos"
 
-        // Se lanza una corrutina en un alcance global
+        // Se lanza una corrutina
         GlobalScope.launch {
             // Se suspende la corrutina durante un segundo
             delay(1000)
-
             // Se utiliza el contexto del hilo principal para mostrar la alerta
             withContext(Dispatchers.Main) {
                 val builder = AlertDialog.Builder(requireContext())

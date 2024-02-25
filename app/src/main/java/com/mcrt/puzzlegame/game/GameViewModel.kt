@@ -33,7 +33,7 @@ class GameViewModel : ViewModel() {
         imagen =bm
         val filasColumnas = when (dificultad) {
             "Fácil" -> 3
-            "Intermedio" -> 4
+            "Medio" -> 4
             "Difícil" -> 5
             else -> throw IllegalArgumentException("Dificultad no válida")
         }
